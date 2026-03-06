@@ -7,6 +7,7 @@ class ConfigSheet: NSObject, NSTableViewDataSource, NSTableViewDelegate {
 
     private var packURLs: [String] = []
     private var fileURLs: [String] = []
+    private var folderBookmark: Data?
 
     private var packTable: NSTableView!
     private var fileTable: NSTableView!
@@ -19,6 +20,7 @@ class ConfigSheet: NSObject, NSTableViewDataSource, NSTableViewDelegate {
         self.config = config
         self.packURLs = config.packURLs
         self.fileURLs = config.fileURLs
+        self.folderBookmark = config.localFolderBookmark
         super.init()
         buildWindow()
     }
@@ -213,6 +215,7 @@ class ConfigSheet: NSObject, NSTableViewDataSource, NSTableViewDelegate {
         panel.begin { [weak self] response in
             if response == .OK, let url = panel.url {
                 self?.folderPathControl.url = url
+                self?.folderBookmark = Configuration.createBookmark(for: url)
             }
         }
     }
@@ -232,7 +235,7 @@ class ConfigSheet: NSObject, NSTableViewDataSource, NSTableViewDelegate {
     @objc private func okPressed() {
         config.packURLs = packURLs.filter { !$0.isEmpty }
         config.fileURLs = fileURLs.filter { !$0.isEmpty }
-        config.localFolderPath = folderPathControl.url?.path
+        config.localFolderBookmark = folderBookmark
         config.transitionMode = transitionPopup.indexOfSelectedItem
         config.scrollSpeed = speedSlider.doubleValue
         config.save()

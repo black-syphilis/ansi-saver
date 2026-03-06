@@ -1,11 +1,16 @@
 import XCTest
+import ScreenSaver
 
 final class ConfigurationTests: XCTestCase {
 
     override func tearDown() {
-        if let defaults = UserDefaults(suiteName: "com.lardissone.AnsiSaver") {
-            defaults.removePersistentDomain(forName: "com.lardissone.AnsiSaver")
-        }
+        let defaults = ScreenSaverDefaults(forModuleWithName: "com.lardissone.AnsiSaver")!
+        defaults.removeObject(forKey: "packURLs")
+        defaults.removeObject(forKey: "fileURLs")
+        defaults.removeObject(forKey: "localFolderBookmark")
+        defaults.removeObject(forKey: "transitionMode")
+        defaults.removeObject(forKey: "scrollSpeed")
+        defaults.synchronize()
         super.tearDown()
     }
 
@@ -13,16 +18,16 @@ final class ConfigurationTests: XCTestCase {
         let config = Configuration.load()
         XCTAssertTrue(config.packURLs.isEmpty)
         XCTAssertTrue(config.fileURLs.isEmpty)
+        XCTAssertNil(config.localFolderBookmark)
         XCTAssertNil(config.localFolderPath)
         XCTAssertEqual(config.transitionMode, 0)
         XCTAssertEqual(config.scrollSpeed, 50.0)
     }
 
-    func testSaveAndLoad() {
+    func testSaveAndLoadURLs() {
         var config = Configuration.load()
         config.packURLs = ["https://16colo.rs/pack/mist0222/"]
         config.fileURLs = ["https://example.com/art.ans"]
-        config.localFolderPath = "/tmp/ansi"
         config.transitionMode = 2
         config.scrollSpeed = 100.0
         config.save()
@@ -30,8 +35,13 @@ final class ConfigurationTests: XCTestCase {
         let loaded = Configuration.load()
         XCTAssertEqual(loaded.packURLs, ["https://16colo.rs/pack/mist0222/"])
         XCTAssertEqual(loaded.fileURLs, ["https://example.com/art.ans"])
-        XCTAssertEqual(loaded.localFolderPath, "/tmp/ansi")
         XCTAssertEqual(loaded.transitionMode, 2)
         XCTAssertEqual(loaded.scrollSpeed, 100.0)
+    }
+
+    func testBookmarkCreation() {
+        let tmpURL = URL(fileURLWithPath: NSTemporaryDirectory())
+        let bookmark = Configuration.createBookmark(for: tmpURL)
+        XCTAssertNotNil(bookmark)
     }
 }
