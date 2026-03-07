@@ -1,0 +1,69 @@
+name: Build
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - runner: macos-15
+            arch: arm64
+            homebrew_prefix: /opt/homebrew
+          - runner: macos-13
+            arch: x86_64
+            homebrew_prefix: /usr/local
+
+    runs-on: ${{ matrix.runner }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install dependencies
+        run: brew install libgd
+
+      - name: Build
+        run: |
+          xcodebuild -project AnsiSaver.xcodeproj \
+            -target AnsiSaver \
+            -configuration Release \
+            ARCHS=${{ matrix.arch }} \
+            HEADER_SEARCH_PATHS='$(inherited) $(SRCROOT)/vendor/libansilove/include $(SRCROOT)/vendor/libansilove/src $(SRCROOT)/vendor/libansilove/compat ${{ matrix.homebrew_prefix }}/include' \
+            LIBRARY_SEARCH_PATHS='$(inherited) ${{ matrix.homebrew_prefix }}/lib' \
+            OTHER_LDFLAGS='${{ matrix.homebrew_prefix }}/lib/libgd.a ${{ matrix.homebrew_prefix }}/opt/libpng/lib/libpng.a ${{ matrix.homebrew_prefix }}/opt/jpeg-turbo/lib/libjpeg.a -lz' \
+            CODE_SIGN_IDENTITY=- \
+            build
+
+      - name: Package
+        run: |
+          cd build/Release
+          zip -r AnsiSaver-${{ matrix.arch }}.saver.zip AnsiSaver.saver
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: AnsiSaver-${{ matrix.arch }}
+          path: build/Release/AnsiSaver-${{ matrix.arch }}.saver.zip
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            AnsiSaver-arm64/AnsiSaver-arm64.saver.zip
+            AnsiSaver-x86_64/AnsiSaver-x86_64.saver.zip
+          generate_release_notes: true
