@@ -32,6 +32,8 @@ AnsiSaver pulls art directly from 16colo.rs packs and scrolls it across your scr
 
 ## Installation
 
+**Requirements:** Apple Silicon Mac, macOS Tahoe (26.0) or later.
+
 ### Download
 
 Grab the latest `AnsiSaver.saver.zip` from the [Releases](https://github.com/lardissone/ansi-saver/releases) page.
