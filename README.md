@@ -7,7 +7,11 @@ Remember dialing into BBSes at 14.4k, watching ANSI art fill your terminal line 
 AnsiSaver pulls art directly from 16colo.rs packs and scrolls it across your screen, rendered with the same [libansilove](https://www.ansilove.org/) library the archive uses. It's like leaving your terminal connected to a BBS you never logged off from.
 
 <p align="center">
-  <img src="docs/screenshot-preview.jpg" alt="AnsiSaver preview in System Settings" width="520">
+  <a href="https://youtu.be/mdlXhbqu4iw">
+    <img src="https://img.youtube.com/vi/mdlXhbqu4iw/maxresdefault.jpg" alt="AnsiSaver demo video" width="640">
+  </a>
+  <br>
+  <sub>▶ Watch the demo video</sub>
 </p>
 
 ## What it does
