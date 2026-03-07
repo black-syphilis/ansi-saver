@@ -11,7 +11,7 @@ AnsiSaver pulls art directly from 16colo.rs packs and scrolls it across your scr
     <img src="https://img.youtube.com/vi/mdlXhbqu4iw/maxresdefault.jpg" alt="AnsiSaver demo video" width="640">
   </a>
   <br>
-  <sub>▶ Watch the demo video</sub>
+  <sub><a href="https://youtu.be/mdlXhbqu4iw">▶ Watch the demo video</a></sub>
 </p>
 
 ## What it does
