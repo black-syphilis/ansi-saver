@@ -33,7 +33,7 @@ AnsiSaver pulls art directly from 16colo.rs packs and scrolls it across your scr
 
 Grab the latest release from the [Releases](https://github.com/lardissone/ansi-saver/releases) page:
 
-- **Apple Silicon** (M1/M2/M3/M4): `AnsiSaver-arm64.saver.zip`
+- **Apple Silicon**: `AnsiSaver-arm64.saver.zip`
 - **Intel**: `AnsiSaver-x86_64.saver.zip`
 
 1. Unzip the file
