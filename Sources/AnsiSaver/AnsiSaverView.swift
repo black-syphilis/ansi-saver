@@ -228,8 +228,11 @@ class AnsiSaverView: ScreenSaverView {
     }
 
     override var configureSheet: NSWindow? {
-        let sheet = ConfigSheet(config: Configuration.load())
-        configSheet = sheet
-        return sheet.configWindow
+        if configSheet == nil {
+            configSheet = ConfigSheet(config: Configuration.load())
+        } else {
+            configSheet?.reload(Configuration.load())
+        }
+        return configSheet?.configWindow
     }
 }

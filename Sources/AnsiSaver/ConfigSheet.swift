@@ -27,6 +27,25 @@ class ConfigSheet: NSObject, NSTableViewDataSource, NSTableViewDelegate {
 
     var configWindow: NSWindow { window }
 
+    func reload(_ newConfig: Configuration) {
+        config = newConfig
+        packURLs = newConfig.packURLs
+        folderBookmark = newConfig.localFolderBookmark
+        packTable.reloadData()
+        if let path = newConfig.localFolderPath {
+            folderPathControl.url = URL(fileURLWithPath: path)
+        } else {
+            folderPathControl.url = nil
+        }
+        transitionPopup.selectItem(at: newConfig.transitionMode)
+        speedSlider.doubleValue = newConfig.scrollSpeed
+        speedLabel.stringValue = "\(Int(newConfig.scrollSpeed)) px/s"
+        scalePopup.selectItem(at: newConfig.scaleFactor - 1)
+        continuousCheck.state = newConfig.continuousScroll ? .on : .off
+        separatorCheck.state = newConfig.showSeparator ? .on : .off
+        separatorCheck.isEnabled = newConfig.continuousScroll
+    }
+
     private func buildWindow() {
         window = NSWindow(
             contentRect: NSRect(x: 0, y: 0, width: 520, height: 480),
@@ -243,10 +262,18 @@ class ConfigSheet: NSObject, NSTableViewDataSource, NSTableViewDelegate {
         config.showSeparator = separatorCheck.state == .on
         config.save()
 
-        window.sheetParent?.endSheet(window)
+        dismissSheet()
     }
 
     @objc private func cancelPressed() {
-        window.sheetParent?.endSheet(window)
+        dismissSheet()
+    }
+
+    private func dismissSheet() {
+        if let parent = window.sheetParent {
+            parent.endSheet(window)
+        } else {
+            window.close()
+        }
     }
 }
