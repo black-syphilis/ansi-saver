@@ -116,6 +116,9 @@ class AnsiSaverView: ScreenSaverView {
         let transition = TransitionMode(rawValue: config.transitionMode) ?? .scrollUp
 
         let useModem = self.config.isModemMode
+        if useModem {
+            animator?.nextFileName = (path as NSString).lastPathComponent
+        }
 
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let self = self else { return }
@@ -243,6 +246,7 @@ class AnsiSaverView: ScreenSaverView {
                     rows: rows,
                     contentColumnsPerRow: contentCols,
                     modemSpeed: self.config.modemSpeed,
+                    scaleFactor: sf,
                     viewSize: self.bounds.size
                 )
             }

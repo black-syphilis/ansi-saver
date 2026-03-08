@@ -54,6 +54,49 @@ enum Renderer {
         return RenderResult(image: image, pixelWidth: pixelWidth, pixelHeight: pixelHeight)
     }
 
+    /// Render a Z-Modem transfer status line using ansilove with DOS colors
+    /// and a CP437 shade gradient prefix in a random bright color.
+    /// Returns the image and the cursor column (character position after the text).
+    static func renderLoadingMessage(fileName: String, scaleFactor: UInt8 = 0) -> (image: NSImage, cursorColumn: Int)? {
+        let displayName = String(fileName.prefix(40))
+
+        // Random bright color for the shade gradient (31-36 = R,G,Y,B,M,C)
+        let colorCode = Int.random(in: 31...36)
+
+        // Build raw bytes — CP437 shade characters (0xB0-0xB2, 0xDB) must be
+        // written as literal byte values since they differ from ISO-8859-1.
+        var bytes = Data()
+        // ░▒▓█ in random bright color
+        bytes.append(contentsOf: "\u{1b}[1;\(colorCode)m".utf8)
+        bytes.append(contentsOf: [0xB0, 0xB1, 0xB2, 0xDB] as [UInt8])
+        // Dark grey text
+        bytes.append(contentsOf: "\u{1b}[1;30m".utf8)
+        bytes.append(contentsOf: " Initiating Z-Modem transfer of ".utf8)
+        // Normal grey filename
+        bytes.append(contentsOf: "\u{1b}[0;37m".utf8)
+        bytes.append(contentsOf: displayName.utf8)
+        // Dark grey "..."
+        bytes.append(contentsOf: "\u{1b}[1;30m".utf8)
+        bytes.append(contentsOf: "...".utf8)
+        // Reset
+        bytes.append(contentsOf: "\u{1b}[0m".utf8)
+
+        // 4 shade + " Initiating Z-Modem transfer of " (32) + name + "..." (3)
+        let cursorColumn = 39 + displayName.count
+
+        let tempPath = (NSTemporaryDirectory() as NSString)
+            .appendingPathComponent("ansisaver-loading.ans")
+        do {
+            try bytes.write(to: URL(fileURLWithPath: tempPath))
+        } catch {
+            return nil
+        }
+        defer { try? FileManager.default.removeItem(atPath: tempPath) }
+
+        guard let image = render(ansFileAt: tempPath, scaleFactor: scaleFactor) else { return nil }
+        return (image, cursorColumn)
+    }
+
     /// Scan the rendered image to find content width (in character columns) per row.
     /// A character cell is considered empty if each of its R, G, B channels is <= 2.
     /// This allows modem simulation to skip trailing blank columns per row.
