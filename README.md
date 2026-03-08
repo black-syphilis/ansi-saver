@@ -71,7 +71,7 @@ Open **System Settings > Screen Saver**, select **AnsiSaver**, and click **Optio
 ```
 https://16colo.rs/pack/acid-100/
 https://16colo.rs/pack/mist0222/
-https://16colo.rs/pack/blocktronics-space/
+https://16colo.rs/pack/blocktronics_acid_trip/
 ```
 
 **Local Folder** — Point to a directory on disk containing `.ANS` files. Great for your personal collection or artpacks you've downloaded.
@@ -110,9 +110,9 @@ A few packs to get you started:
 |------|-----|-------|
 | [ACiD 100](https://16colo.rs/pack/acid-100/) | 1995 | The legendary ACiD Productions centennial pack |
 | [Mist 0222](https://16colo.rs/pack/mist0222/) | 2022 | Mistigris — still going strong after 28 years |
-| [Blocktronics: Space](https://16colo.rs/pack/blocktronics-space/) | 2014 | Cosmic ANSI art from the modern scene |
-| [iCE 9601](https://16colo.rs/pack/ice-9601/) | 1996 | iCE Advertisements — peak 90s ANSI |
-| [Fire 01](https://16colo.rs/pack/fire-01/) | 1996 | Fire artpack from the golden era |
+| [Blocktronics: ACiD Trip](https://16colo.rs/pack/blocktronics_acid_trip/) | 2013 | Blocktronics x ACiD collaboration pack |
+| [iCE 9906a](https://16colo.rs/pack/ice9906a/) | 1999 | iCE Advertisements — classic 90s ANSI |
+| [Fire 0697](https://16colo.rs/pack/fire0697/) | 1997 | Fire artpack from the golden era |
 
 Browse the full archive at [16colo.rs](https://16colo.rs) — there are thousands of packs spanning from 1990 to the present day.
 
