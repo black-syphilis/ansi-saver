@@ -1,18 +1,22 @@
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 
-protocol ArtSource {
+
+public protocol ArtSource {
     func loadArtPaths(completion: @escaping ([String]) -> Void)
 }
 
-class FolderSource: ArtSource {
+public final class FolderSource: ArtSource {
 
     private let folderPath: String
 
-    init(folderPath: String) {
+    public init(folderPath: String) {
         self.folderPath = folderPath
     }
 
-    func loadArtPaths(completion: @escaping ([String]) -> Void) {
+    public func loadArtPaths(completion: @escaping ([String]) -> Void) {
         let fm = FileManager.default
         guard let contents = try? fm.contentsOfDirectory(atPath: folderPath) else {
             completion([])
@@ -32,15 +36,15 @@ class FolderSource: ArtSource {
     }
 }
 
-class PackSource: ArtSource {
+public final class PackSource: ArtSource {
 
     private let packURL: String
 
-    init(packURL: String) {
+    public init(packURL: String) {
         self.packURL = packURL
     }
 
-    func loadArtPaths(completion: @escaping ([String]) -> Void) {
+    public func loadArtPaths(completion: @escaping ([String]) -> Void) {
         let packName = extractPackName(from: packURL)
 
         PackFetcher.fetchFileList(packURL: packURL) { filenames in
@@ -82,15 +86,15 @@ class PackSource: ArtSource {
     }
 }
 
-class URLSource: ArtSource {
+public final class URLSource: ArtSource {
 
     private let fileURLs: [String]
 
-    init(fileURLs: [String]) {
+    public init(fileURLs: [String]) {
         self.fileURLs = fileURLs
     }
 
-    func loadArtPaths(completion: @escaping ([String]) -> Void) {
+    public func loadArtPaths(completion: @escaping ([String]) -> Void) {
         let queue = DispatchQueue(label: "com.lardissone.AnsiSaver.urlSource")
         var localPaths: [String] = []
         let group = DispatchGroup()

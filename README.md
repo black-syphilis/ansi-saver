@@ -25,6 +25,24 @@ AnsiSaver pulls art directly from 16colo.rs packs and scrolls it across your scr
 - Configurable scroll speed and render scale (2x–4x for sharp output on Retina displays)
 - Works with local folders too — point it at your personal ANSI art collection
 
+## Windows 11 compatibility
+
+The `.saver` target remains macOS-only (Apple's ScreenSaver framework does not exist on Windows),
+but this repository now ships a **cross-platform Swift Package**:
+
+- `AnsiSaverCore`: pack fetching, URL/folder scanning, and cache logic
+- `ansi-saver-cli`: command-line tool that runs on Windows 11 and macOS
+
+Build and run on Windows 11 (with Swift toolchain installed):
+
+```bash
+swift build
+swift run ansi-saver-cli fetch-pack https://16colo.rs/pack/blocktronics_acid_trip/
+swift run ansi-saver-cli scan-folder C:\ansi\packs
+```
+
+This makes the project usable on Windows today and provides a foundation for a future native Windows renderer/saver host.
+
 ## Installation
 
 **Requirements:** macOS Sequoia (15.0) or later. Supports both Apple Silicon and Intel Macs.
