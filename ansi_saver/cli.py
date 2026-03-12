@@ -5,6 +5,7 @@ import argparse
 from .art_source import FolderSource
 from .pack_fetcher import PackFetcher
 from .viewer import run_viewer
+from .windows_screensaver import main as run_windows_screensaver
 
 
 def main() -> int:
@@ -24,6 +25,9 @@ def main() -> int:
     viewer.add_argument("--delay", type=float, default=6.0, help="Delay in seconds between files")
     viewer.add_argument("--once", action="store_true", help="Display each file once and exit")
     viewer.add_argument("--no-clear", action="store_true", help="Do not clear terminal between files")
+
+    win_scr = sub.add_parser("windows-screensaver", help="Run Windows screensaver host commands")
+    win_scr.add_argument("scr_args", nargs=argparse.REMAINDER, help="Arguments passed to screensaver host")
 
     args = parser.parse_args()
 
@@ -45,6 +49,10 @@ def main() -> int:
             once=args.once,
             clear_between=not args.no_clear,
         )
+
+    if args.command == "windows-screensaver":
+        forwarded = args.scr_args if args.scr_args else ["config"]
+        return run_windows_screensaver(forwarded)
 
     return 1
 

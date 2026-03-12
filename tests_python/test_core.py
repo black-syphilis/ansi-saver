@@ -1,11 +1,18 @@
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from ansi_saver.art_source import FolderSource
 from ansi_saver.cache import Cache
 from ansi_saver.pack_fetcher import PackFetcher
 from ansi_saver.viewer import load_paths, read_ansi_text
+from ansi_saver.windows_screensaver import (
+    load_settings,
+    parse_windows_scr_args,
+    save_settings,
+    settings_path,
+)
 
 
 class CoreTests(unittest.TestCase):
@@ -49,6 +56,21 @@ class CoreTests(unittest.TestCase):
             content = read_ansi_text(path)
             self.assertEqual(len(content), 3)
             self.assertTrue(content.startswith("A"))
+
+    def test_windows_scr_arg_parsing(self):
+        self.assertEqual(parse_windows_scr_args(["/s"]), ("start", None))
+        self.assertEqual(parse_windows_scr_args(["/c:1234"]), ("config", "1234"))
+        self.assertEqual(parse_windows_scr_args(["/p", "999"]), ("preview", "999"))
+
+    def test_windows_settings_roundtrip(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            with patch.dict("os.environ", {"APPDATA": tmp}, clear=False):
+                save_settings("C:/ansi", 4.5)
+                path = settings_path()
+                self.assertTrue(path.exists())
+                loaded = load_settings()
+                self.assertEqual(loaded["folder"], "C:/ansi")
+                self.assertEqual(loaded["delay"], 4.5)
 
 
 if __name__ == "__main__":

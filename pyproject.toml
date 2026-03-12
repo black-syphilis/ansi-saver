@@ -10,3 +10,4 @@ requires-python = ">=3.10"
 
 [project.scripts]
 ansi-saver = "ansi_saver.cli:main"
+ansi-saver-scr = "ansi_saver.windows_screensaver:main"
