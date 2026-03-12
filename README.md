@@ -45,7 +45,7 @@ python -m ansi_saver.windows_screensaver start
 
 Le mode `viewer` affiche les fichiers ANSI dans le terminal en mode diaporama (Ctrl+C pour arrêter).
 
-Le module `windows_screensaver` lance une fenêtre plein écran fermée au mouvement souris/clavier (comportement type écran de veille).
+Le module `windows_screensaver` lance une fenêtre plein écran fermée au mouvement souris/clavier (comportement type écran de veille) avec interprétation ANSI (couleurs + déplacements curseur) pour éviter l'affichage brut des séquences `\x1b[...]`.
 
 Pour intégration Windows `.scr` :
 

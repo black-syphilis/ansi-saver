@@ -7,6 +7,7 @@ from ansi_saver.art_source import FolderSource
 from ansi_saver.cache import Cache
 from ansi_saver.pack_fetcher import PackFetcher
 from ansi_saver.viewer import load_paths, read_ansi_text
+from ansi_saver.ansi_terminal import parse_ansi
 from ansi_saver.windows_screensaver import (
     load_settings,
     parse_windows_scr_args,
@@ -56,6 +57,14 @@ class CoreTests(unittest.TestCase):
             content = read_ansi_text(path)
             self.assertEqual(len(content), 3)
             self.assertTrue(content.startswith("A"))
+
+    def test_ansi_parser_handles_color_and_cursor_moves(self):
+        sample = "A\x1b[31mR\x1b[0m\nZ\x1b[1A\x1b[2CX"
+        grid = parse_ansi(sample, columns=10, rows=4)
+        self.assertEqual(grid[0][0].char, "A")
+        self.assertEqual(grid[0][1].char, "R")
+        self.assertEqual(grid[0][1].fg, "#aa0000")
+        self.assertEqual(grid[0][5].char, "X")
 
     def test_windows_scr_arg_parsing(self):
         self.assertEqual(parse_windows_scr_args(["/s"]), ("start", None))

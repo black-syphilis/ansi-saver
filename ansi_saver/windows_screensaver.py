@@ -7,6 +7,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from .ansi_terminal import parse_ansi
 from .viewer import load_paths, read_ansi_text
 
 DEFAULT_DELAY_SECONDS = 8.0
@@ -52,7 +53,6 @@ def parse_windows_scr_args(argv: list[str]) -> tuple[str, str | None]:
     if token.startswith("/s"):
         return ("start", None)
     if token.startswith("/c"):
-        # /c or /c:12345 style
         handle = None
         if ":" in argv[0]:
             handle = argv[0].split(":", 1)[1]
@@ -141,6 +141,29 @@ def run_fullscreen_screensaver(folder: str, delay_seconds: float) -> int:
     )
     text.pack(fill="both", expand=True)
 
+    tag_cache: set[str] = set()
+
+    def paint_ansi(content: str, title: str) -> None:
+        grid = parse_ansi(content, columns=120, rows=90)
+        text.delete("1.0", "end")
+        text.insert("1.0", f"{title}\n\n", "title")
+        text.tag_configure("title", foreground="#ffffff", background="#000000")
+
+        for line in grid:
+            c = 0
+            while c < len(line):
+                start = c
+                cell = line[c]
+                while c < len(line) and line[c].fg == cell.fg and line[c].bg == cell.bg:
+                    c += 1
+                segment = "".join(ch.char for ch in line[start:c])
+                tag = f"fg_{cell.fg}_bg_{cell.bg}".replace("#", "")
+                if tag not in tag_cache:
+                    text.tag_configure(tag, foreground=cell.fg, background=cell.bg)
+                    tag_cache.add(tag)
+                text.insert("end", segment, tag)
+            text.insert("end", "\n")
+
     for event_name in ["<Motion>", "<Key>", "<Button>", "<MouseWheel>", "<Escape>"]:
         root.bind(event_name, lambda _e: root.destroy())
 
@@ -150,9 +173,7 @@ def run_fullscreen_screensaver(folder: str, delay_seconds: float) -> int:
     def show_next() -> None:
         path = paths[index["value"] % len(paths)]
         content = read_ansi_text(path)
-        text.delete("1.0", "end")
-        text.insert("1.0", f"{Path(path).name}\n\n")
-        text.insert("end", content)
+        paint_ansi(content, Path(path).name)
         index["value"] += 1
         root.after(delay_ms or 1, show_next)
 
@@ -162,7 +183,6 @@ def run_fullscreen_screensaver(folder: str, delay_seconds: float) -> int:
 
 
 def main(argv: list[str] | None = None) -> int:
-    # If launched as .scr, Windows passes /s, /c, /p variants.
     args = list(sys.argv[1:] if argv is None else argv)
     if args and args[0].startswith("/"):
         action, _ = parse_windows_scr_args(args)
