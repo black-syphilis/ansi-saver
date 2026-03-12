@@ -4,3 +4,7 @@ DerivedData/
 xcuserdata/
 .DS_Store
 .superset/
+
+# Python
+__pycache__/
+*.pyc
