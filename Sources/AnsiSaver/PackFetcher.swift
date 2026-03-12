@@ -1,8 +1,12 @@
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 
-enum PackFetcher {
 
-    static func fetchFileList(packURL: String, completion: @escaping ([String]) -> Void) {
+public enum PackFetcher {
+
+    public static func fetchFileList(packURL: String, completion: @escaping ([String]) -> Void) {
         let normalizedURL = packURL.hasSuffix("/") ? packURL : packURL + "/"
         guard let url = URL(string: normalizedURL) else {
             completion([])
@@ -28,7 +32,7 @@ enum PackFetcher {
         task.resume()
     }
 
-    static func downloadFile(packURL: String, filename: String, to localPath: String,
+    public static func downloadFile(packURL: String, filename: String, to localPath: String,
                              completion: @escaping (Bool) -> Void) {
         let normalizedURL = packURL.hasSuffix("/") ? packURL : packURL + "/"
         guard let encodedFilename = filename.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) else {
@@ -55,7 +59,7 @@ enum PackFetcher {
         task.resume()
     }
 
-    static func parseANSFilenames(from html: String) -> [String] {
+    public static func parseANSFilenames(from html: String) -> [String] {
         let pattern = #"href="[^"]*?/([^/"]+\.(?:ans|ANS|ice|ICE|asc|ASC|bin|BIN|xb|XB|pcb|PCB|adf|ADF))""#
         guard let regex = try? NSRegularExpression(pattern: pattern) else { return [] }
 

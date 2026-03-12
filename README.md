@@ -25,6 +25,39 @@ AnsiSaver pulls art directly from 16colo.rs packs and scrolls it across your scr
 - Configurable scroll speed and render scale (2x–4x for sharp output on Retina displays)
 - Works with local folders too — point it at your personal ANSI art collection
 
+## Windows 11 / Python conversion
+
+Tu peux maintenant utiliser le coeur du projet en **Python** (sans Swift) pour la partie
+récupération/cache des fichiers ANSI :
+
+- module Python `ansi_saver` (`cache`, `pack_fetcher`, `art_source`)
+- CLI Python `python -m ansi_saver.cli`
+
+Exemples sous Windows 11 :
+
+```bash
+python -m ansi_saver.cli fetch-pack https://16colo.rs/pack/blocktronics_acid_trip/
+python -m ansi_saver.cli scan-folder C:\ansi\packs
+python -m ansi_saver.cli viewer --folder C:\ansi\packs --delay 8
+python -m ansi_saver.windows_screensaver config --folder C:\ansi\packs --delay 8
+python -m ansi_saver.windows_screensaver start
+```
+
+Le mode `viewer` affiche les fichiers ANSI dans le terminal en mode diaporama (Ctrl+C pour arrêter).
+
+Le module `windows_screensaver` lance une fenêtre plein écran fermée au mouvement souris/clavier (comportement type écran de veille) avec interprétation ANSI (couleurs + déplacements curseur) pour éviter l'affichage brut des séquences `\x1b[...]`.
+
+Pour intégration Windows `.scr` :
+
+```bash
+pip install pyinstaller
+pyinstaller --onefile --windowed -n AnsiSaverScr ansi_saver/windows_screensaver.py
+```
+
+Puis renommer `dist/AnsiSaverScr.exe` en `AnsiSaver.scr` et le copier dans `C:\Windows\System32`.
+
+> Note: le screensaver natif macOS (`.saver`) reste en Swift/AppKit. La conversion Python couvre le coeur cross-platform et l'outillage CLI.
+
 ## Installation
 
 **Requirements:** macOS Sequoia (15.0) or later. Supports both Apple Silicon and Intel Macs.

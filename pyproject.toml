@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ansi-saver-python"
+version = "0.1.0"
+description = "Cross-platform Python core utilities for ANSI Saver"
+requires-python = ">=3.10"
+
+[project.scripts]
+ansi-saver = "ansi_saver.cli:main"
+ansi-saver-scr = "ansi_saver.windows_screensaver:main"
